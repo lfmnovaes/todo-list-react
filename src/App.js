@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import TodoList from './TodoList';
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 
 const LOCAL_STORAGE_KEY = 'todoApp.todoList';
 
@@ -28,9 +28,14 @@ function App() {
     const name = todoNameRef.current.value;
     if (name === '') return;
     setTodos(prevTodos => {
-      return [...prevTodos, { id: uuid(), name: name, completed: false }]
+      return [...prevTodos, { id: uuidv4(), name: name, completed: false }]
     });
     todoNameRef.current.value = null;
+  }
+
+  function handleClearTodos() {
+    const newTodos = todos.filter(todoList => !todoList.completed);
+    setTodos(newTodos);
   }
 
   return (
@@ -38,8 +43,8 @@ function App() {
       <TodoList todoList={todos} toggleTodo={toggleTodo} />
       <input ref={todoNameRef} type="text" />
       <button onClick={handleAddTodo}>Add Todo</button>
-      <button>Clear Completed</button>
-      <div>0 left to do</div>
+      <button onClick={handleClearTodos}>Clear Completed</button>
+      <div>{todos.filter(todoList => !todoList.completed).length} left to do</div>
     </>
   );
 }
